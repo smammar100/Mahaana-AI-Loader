@@ -1,5 +1,4 @@
 declare module "gif.js" {
-  interface GIF {
-    on(event: "error", listener: (err: Error) => void): this
-  }
+  const GIF: new (options?: object) => any
+  export default GIF
 }
