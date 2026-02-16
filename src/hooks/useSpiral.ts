@@ -151,41 +151,77 @@ export function useSpiral(size: number, options: SpiralOptions) {
     const frameCount = Math.ceil(duration * fps)
     const delay = 1000 / fps
 
+    const width = Math.floor(displaySize)
+    const height = Math.floor(displaySize)
     const canvas = document.createElement("canvas")
-    canvas.width = displaySize
-    canvas.height = displaySize
+    canvas.width = width
+    canvas.height = height
     const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    const GIF = (await import("gif.js")).default
-    const workerBlob = await fetch("/gif.worker.js").then((r) => r.blob())
-    const workerUrl = URL.createObjectURL(workerBlob)
-
-    const gif = new GIF({
-      workers: 2,
-      quality: 10,
-      workerScript: workerUrl,
-    })
-
-    for (let i = 0; i < frameCount; i++) {
-      const t = (i / frameCount) * duration
-      renderFrame(ctx, displaySize, t, options)
-      gif.addFrame(ctx, { copy: true, delay })
+    if (!ctx) {
+      throw new Error("Could not get canvas 2D context")
     }
 
-    return new Promise<void>((resolve) => {
-      gif.on("finished", (blob: Blob) => {
+    let workerUrl: string | null = null
+
+    try {
+      const GIF = (await import("gif.js")).default
+      const response = await fetch("/gif.worker.js")
+      if (!response.ok) {
+        throw new Error(`Failed to load GIF worker: ${response.status}`)
+      }
+      const workerBlob = await response.blob()
+      workerUrl = URL.createObjectURL(workerBlob)
+
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        workerScript: workerUrl,
+        width,
+        height,
+      })
+
+      for (let i = 0; i < frameCount; i++) {
+        const t = (i / frameCount) * duration
+        renderFrame(ctx, width, t, options)
+        gif.addFrame(ctx, { copy: true, delay })
+      }
+
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        gif.on("finished", (b: Blob) => {
+          resolve(b)
+        })
+        gif.on("error", (err: Error) => {
+          reject(err)
+        })
+        gif.render()
+      })
+
+      if ("showSaveFilePicker" in window) {
+        const handle = await (window as Window & { showSaveFilePicker: (opts?: object) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
+          suggestedName: "mahana-ai-loader.gif",
+          types: [{ description: "GIF image", accept: { "image/gif": [".gif"] } }],
+        })
+        const writable = await handle.createWritable()
+        await writable.write(blob)
+        await writable.close()
+      } else {
         const url = URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = url
         a.download = "mahana-ai-loader.gif"
+        a.style.display = "none"
+        document.body.appendChild(a)
         a.click()
-        URL.revokeObjectURL(url)
+        setTimeout(() => {
+          document.body.removeChild(a)
+          URL.revokeObjectURL(url)
+        }, 100)
+      }
+    } finally {
+      if (workerUrl) {
         URL.revokeObjectURL(workerUrl)
-        resolve()
-      })
-      gif.render()
-    })
+      }
+    }
   }, [displaySize, options])
 
   return { containerRef, exportSVG, exportGIF }

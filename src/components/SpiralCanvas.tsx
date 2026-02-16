@@ -25,6 +25,13 @@ export function SpiralCanvas({
     setGifEncoding(true)
     try {
       await exportGIF()
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        return
+      }
+      console.error("GIF export failed:", err)
+      const message = err instanceof Error ? err.message : "GIF export failed"
+      alert(message)
     } finally {
       setGifEncoding(false)
     }
