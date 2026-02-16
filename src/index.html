@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>[javascript] ❍  Golden Spiral</title>
+    <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
+<link rel="stylesheet" href="./style.css">
+
+  </head>
+    
+  <body>
+    <div class="controls">
+      <div class="size-presets">
+        <span class="label">Size:</span>
+        <div class="size-btns">
+          <button class="size-btn" data-size="32">32</button>
+          <button class="size-btn" data-size="48">48</button>
+          <button class="size-btn" data-size="64">64</button>
+          <button class="size-btn" data-size="96">96</button>
+          <button class="size-btn" data-size="120">120</button>
+          <button class="size-btn" data-size="200">200</button>
+          <button class="size-btn" data-size="256">256</button>
+          <button class="size-btn" data-size="400">400</button>
+        </div>
+      </div>
+      <div class="export-presets">
+        <button class="export-btn" id="export-svg">Export SVG</button>
+        <button class="export-btn" id="export-gif">Export GIF</button>
+      </div>
+    </div>
+    <div id="spiral"></div>
+    <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.js"></script>
+    <script src="./script.js"></script>
+  </body>
+  
+</html>

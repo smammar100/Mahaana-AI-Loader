@@ -1,0 +1,103 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  gap: 24px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px;
+}
+
+.size-presets {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.size-presets .label {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+.size-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.size-btn {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.size-btn:hover {
+  background: #f0f0f0;
+}
+
+.size-btn.active {
+  background: #7042D2;
+  color: #fff;
+  border-color: #7042D2;
+}
+
+.export-presets {
+  display: flex;
+  gap: 8px;
+}
+
+.export-btn {
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+  padding: 8px 16px;
+  border: 1px solid #7042D2;
+  background: #fff;
+  color: #7042D2;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.export-btn:hover {
+  background: #7042D2;
+  color: #fff;
+}
+
+.export-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#spiral {
+  width: 400px;
+  height: 400px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 400px;
+  max-height: 400px;
+  aspect-ratio: 1;
+  flex-shrink: 0;
+}
+
+circle {
+  fill: #7042D2;
+  opacity: 0.6;
+}
