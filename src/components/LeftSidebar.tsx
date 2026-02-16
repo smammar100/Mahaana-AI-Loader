@@ -18,8 +18,6 @@ interface LeftSidebarProps {
   setScale: (s: number) => void
   playbackSpeed: number
   setPlaybackSpeed: (v: number) => void
-  bgMode: "dark" | "light"
-  setBgMode: (m: "dark" | "light") => void
   duration: number
   setDuration: (d: number) => void
 }
@@ -32,8 +30,6 @@ export function LeftSidebar({
   setScale,
   playbackSpeed,
   setPlaybackSpeed,
-  bgMode,
-  setBgMode,
   duration,
   setDuration,
 }: LeftSidebarProps) {
@@ -147,43 +143,6 @@ export function LeftSidebar({
             <ChevronDown className="h-4 w-4 text-zinc-500" />
           </CollapsibleTrigger>
           <CollapsibleContent className="pt-3 space-y-3">
-            <div>
-              <label className={`text-xs mb-2 block ${isDark ? "text-zinc-500" : "text-zinc-600"}`}>Background</label>
-              <div className="flex gap-2">
-                <Button
-                  variant={bgMode === "dark" ? "default" : "outline"}
-                  size="sm"
-                  className={`flex-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 ${
-                    bgMode === "dark"
-                      ? "bg-zinc-600 hover:bg-zinc-500 text-white border-2 border-zinc-500"
-                      : isDark
-                        ? "border-2 border-zinc-600 text-zinc-200 bg-zinc-800/50 hover:bg-zinc-700"
-                        : "border-2 border-zinc-400 text-zinc-800 bg-white hover:bg-zinc-100"
-                  }`}
-                  onClick={() => setBgMode("dark")}
-                  aria-label="Use dark loader background"
-                  aria-pressed={bgMode === "dark"}
-                >
-                  Dark
-                </Button>
-                <Button
-                  variant={bgMode === "light" ? "default" : "outline"}
-                  size="sm"
-                  className={`flex-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 ${
-                    bgMode === "light"
-                      ? "bg-zinc-600 hover:bg-zinc-500 text-white border-2 border-zinc-500"
-                      : isDark
-                        ? "border-2 border-zinc-600 text-zinc-200 bg-zinc-800/50 hover:bg-zinc-700"
-                        : "border-2 border-zinc-400 text-zinc-800 bg-white hover:bg-zinc-100"
-                  }`}
-                  onClick={() => setBgMode("light")}
-                  aria-label="Use light loader background"
-                  aria-pressed={bgMode === "light"}
-                >
-                  Light
-                </Button>
-              </div>
-            </div>
             <div>
               <label className={`text-xs mb-2 block ${isDark ? "text-zinc-500" : "text-zinc-600"}`}>Duration (s)</label>
               <Slider

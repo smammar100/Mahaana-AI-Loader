@@ -172,17 +172,19 @@ export function useSpiral(size: number, options: SpiralOptions) {
       const workerBlob = await response.blob()
       workerUrl = URL.createObjectURL(workerBlob)
 
+      const transparentColor = "#FF00FF"
       const gif = new GIF({
         workers: 2,
         quality: 10,
         workerScript: workerUrl,
         width,
         height,
+        transparent: transparentColor,
       })
 
       for (let i = 0; i < frameCount; i++) {
         const t = (i / frameCount) * duration
-        renderFrame(ctx, width, t, options)
+        renderFrame(ctx, width, t, { ...options, bgColor: transparentColor })
         gif.addFrame(ctx, { copy: true, delay })
       }
 

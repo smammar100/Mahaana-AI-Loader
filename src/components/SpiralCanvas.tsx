@@ -6,7 +6,6 @@ interface SpiralCanvasProps {
   theme: "dark" | "light"
   containerRef: Ref<HTMLDivElement>
   size: number
-  bgColor?: string
   exportGIF: () => Promise<void>
 }
 
@@ -14,7 +13,6 @@ export function SpiralCanvas({
   theme,
   containerRef,
   size,
-  bgColor = "#010109",
   exportGIF,
 }: SpiralCanvasProps) {
   const [gifEncoding, setGifEncoding] = useState(false)
@@ -46,7 +44,6 @@ export function SpiralCanvas({
           style={{
             width: size,
             height: size,
-            backgroundColor: bgColor,
             minWidth: 32,
             minHeight: 32,
             maxWidth: 400,
