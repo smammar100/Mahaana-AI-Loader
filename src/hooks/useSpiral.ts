@@ -227,5 +227,127 @@ export function useSpiral(size: number, options: SpiralOptions) {
     }
   }, [displaySize, options])
 
-  return { containerRef, exportSVG, exportGIF }
+  const exportLottie = useCallback(async () => {
+    const duration = options.duration ?? 3
+    const dotColor = options.dotColor ?? "#7042D2"
+    const { n, dotRadius, margin } = getParams(displaySize)
+    const center = SIZE / 2
+    const maxRadius = center - margin - dotRadius
+
+    const hexToRgb = (hex: string): [number, number, number] => {
+      const m = hex.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i)
+      if (!m) return [0.44, 0.26, 0.82]
+      return [
+        parseInt(m[1], 16) / 255,
+        parseInt(m[2], 16) / 255,
+        parseInt(m[3], 16) / 255,
+      ]
+    }
+
+    const fps = 60
+    const durationFrames = duration * fps
+    const totalFrames = Math.ceil(durationFrames * 2)
+    const ease = { o: { x: [0.4, 0.4], y: [0, 0] }, i: { x: [0.6, 0.6], y: [1, 1] } }
+    const color = hexToRgb(dotColor)
+
+    const shapes: object[] = []
+    for (let i = 0; i < n; i++) {
+      const idx = i + 0.5
+      const frac = idx / n
+      const offsetFrames = frac * durationFrames
+      const rMin = dotRadius * 0.5
+      const rMax = dotRadius * 1.5
+      const dist = Math.sqrt(frac) * maxRadius
+      const theta = idx * GOLDEN_ANGLE
+      const x = center + dist * Math.cos(theta)
+      const y = center + dist * Math.sin(theta)
+
+      const sizeKeyframes = [
+        { t: offsetFrames, s: [rMin * 2, rMin * 2], i: ease.i, o: ease.o },
+        { t: offsetFrames + durationFrames / 2, s: [rMax * 2, rMax * 2], i: ease.i, o: ease.o },
+        { t: offsetFrames + durationFrames, s: [rMin * 2, rMin * 2], i: ease.i, o: ease.o },
+      ]
+      const opacityKeyframes = [
+        { t: offsetFrames, s: [30], i: ease.i, o: ease.o },
+        { t: offsetFrames + durationFrames / 2, s: [100], i: ease.i, o: ease.o },
+        { t: offsetFrames + durationFrames, s: [30], i: ease.i, o: ease.o },
+      ]
+
+      shapes.push({
+        ty: "gr",
+        nm: `Dot ${i}`,
+        np: 3,
+        it: [
+          {
+            ty: "el",
+            p: { a: 0, k: [x, y] },
+            s: { a: 1, k: sizeKeyframes },
+          },
+          {
+            ty: "fl",
+            c: { a: 0, k: color },
+            o: { a: 0, k: 100 },
+            r: 1,
+          },
+          {
+            ty: "tr",
+            p: { a: 0, k: [0, 0] },
+            a: { a: 0, k: [0, 0] },
+            s: { a: 0, k: [100, 100] },
+            r: { a: 0, k: 0 },
+            o: { a: 1, k: opacityKeyframes },
+          },
+        ],
+      })
+    }
+
+    const lottie = {
+      v: "5.7.4",
+      fr: fps,
+      w: SIZE,
+      h: SIZE,
+      nm: "Mahaana AI Loader",
+      layers: [
+        {
+          ddd: 0,
+          ind: 1,
+          ty: 4,
+          nm: "Spiral",
+          sr: 1,
+          ks: { o: { a: 0, k: 100 }, r: { a: 0, k: 0 }, p: { a: 0, k: [200, 200, 0] }, a: { a: 0, k: [200, 200, 0] }, s: { a: 0, k: [100, 100, 100] } },
+          ao: 0,
+          ip: 0,
+          op: totalFrames,
+          shapes,
+        },
+      ],
+    }
+
+    const json = JSON.stringify(lottie)
+    const blob = new Blob([json], { type: "application/json" })
+
+    if ("showSaveFilePicker" in window) {
+      const handle = await (window as Window & { showSaveFilePicker: (opts?: object) => Promise<FileSystemFileHandle> }).showSaveFilePicker({
+        suggestedName: "mahana-ai-loader.json",
+        types: [{ description: "Lottie JSON", accept: { "application/json": [".json"] } }],
+      })
+      const writable = await handle.createWritable()
+      await writable.write(blob)
+      await writable.close()
+    } else {
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = "mahana-ai-loader.json"
+      a.style.display = "none"
+      document.body.appendChild(a)
+      a.click()
+      setTimeout(() => {
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      }, 100)
+    }
+  }, [displaySize, options])
+
+  return { containerRef, exportSVG, exportGIF, exportLottie }
 }

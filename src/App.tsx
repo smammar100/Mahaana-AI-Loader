@@ -17,7 +17,7 @@ export default function App() {
     duration: duration / playbackSpeed,
   }
 
-  const { containerRef, exportGIF } = useSpiral(displaySize, spiralOptions)
+  const { containerRef, exportGIF, exportLottie } = useSpiral(displaySize, spiralOptions)
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: theme === "dark" ? "#010109" : "#F2F2F0" }}>
@@ -39,6 +39,7 @@ export default function App() {
           containerRef={containerRef}
           size={displaySize}
           exportGIF={exportGIF}
+          exportLottie={exportLottie}
         />
       </div>
     </div>
