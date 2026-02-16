@@ -173,13 +173,14 @@ export function useSpiral(size: number, options: SpiralOptions) {
       workerUrl = URL.createObjectURL(workerBlob)
 
       const transparentColor = "#FF00FF"
+      const transparentColorHex = 0xff00ff
       const gif = new GIF({
         workers: 2,
         quality: 10,
         workerScript: workerUrl,
         width,
         height,
-        transparent: transparentColor,
+        transparent: transparentColorHex,
       })
 
       for (let i = 0; i < frameCount; i++) {
